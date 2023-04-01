@@ -1,0 +1,40 @@
+#welcome-setup {
+    display: block;
+    align-items: center;
+}
+
+.container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.row {
+    width: auto;
+    height: auto;
+    display: block;
+}
+
+.maze-setter {
+    display: flex;
+    flex-direction: column;
+    padding-right: 30px;
+}
+
+.maze-buttons {
+    margin-top: 20px;
+}
+
+#Start-button {
+    margin-top: 0;
+}
+
+.grid {
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 10px;
+    height: 10px;
+    border: black 1px solid;
+}

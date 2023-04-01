@@ -1,0 +1,1 @@
+Stretch goals >>> set end point, start point, dynamic grid size 
