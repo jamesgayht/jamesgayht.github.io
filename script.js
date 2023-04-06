@@ -1,3 +1,12 @@
+const buttonsArray = ["Start", "End", "Obstacles", "Visualize", "Clear"]
+
+$(() => {
+  console.info("Welcome to Maze Runner!");
+  //   welcomeMessage();
+  addButtons(buttonsArray);
+  createMaze();
+});
+
 // function welcomeMessage() {
 //   console.info("Setting up the interface");
 
@@ -49,19 +58,23 @@ function addButtons(buttonNamesArray) {
 function addStartPoint(element) {
   const $button = $(element.currentTarget);
   $button.addClass("enabled");
+  $("#End-button").removeClass("enabled");
+  $("#Obstacles-button").removeClass("enabled");
 
   $(".grid").on("click", (element) => {
-    // on clicking the maze, select the id of the grid to set as the start point
-    $(".start").removeClass("start");
-    const $selectedGrid = $(element.currentTarget);
-    console.info("selected grid >>> ", $selectedGrid);
-    $selectedGrid.addClass("start");
+    if ($("#Start-button").hasClass("enabled")) {
+      // on clicking the maze, select the id of the grid to set as the start point
+      $(".start").removeClass("start");
+      const $selectedGrid = $(element.currentTarget);
+      console.info("selected grid >>> ", $selectedGrid);
+      $selectedGrid.addClass("start");
 
-    console.info("remove class enabled ");
-    $button.removeClass("enabled");
+      console.info("remove class enabled ");
+      $button.removeClass("enabled");
 
-    // prevent further clicking until start button is clicked again
-    $(".grid").off("click");
+      // prevent further clicking until start button is clicked again
+      $(".grid").off("click");
+    }
   });
 }
 
@@ -69,49 +82,58 @@ function addEndPoint(element) {
   const $button = $(element.currentTarget);
   $button.addClass("enabled");
 
+  $("#Start-button").removeClass("enabled");
+  $("#Obstacles-button").removeClass("enabled");
+
   $(".grid").on("click", (element) => {
-    // on clicking the maze, select the id of the grid to set as the end point
-    $(".end").removeClass("end");
-    const $selectedGrid = $(element.currentTarget);
-    $selectedGrid.addClass("end");
+    if ($("#End-button").hasClass("enabled")) {
+      // on clicking the maze, select the id of the grid to set as the end point
+      $(".end").removeClass("end");
+      const $selectedGrid = $(element.currentTarget);
+      $selectedGrid.addClass("end");
 
-    $button.removeClass("enabled");
+      $button.removeClass("enabled");
 
-    // prevent further clicking until start button is clicked again
-    $(".grid").off("click");
+      // prevent further clicking until start button is clicked again
+      $(".grid").off("click");
+    }
   });
 }
 
 function addObstacles(element) {
   const $button = $(element.currentTarget);
-  $button.addClass("enabled");
+  $("#Start-button").removeClass("enabled");
+  $("#End-button").removeClass("enabled");
 
-  $(".grid").mousedown(() => {
-    $(".grid")
-      .mousemove((element) => {
-        console.info("in mousemove >>> ");
-        $(element.currentTarget).addClass("obstacle");
-        
-      })
-      .mouseup(function() {
-        $(".grid").off("mousemove");
-      })
-  });
+  if ($button.hasClass("enabled")) {
+    $button.removeClass("enabled");
+    $(".grid").off("click");
+  } else {
+    $button.addClass("enabled");
+    $(".grid").mousedown(() => {
+      if ($("#Obstacles-button").hasClass("enabled")) {
+        $(".grid")
+          .mousemove((element) => {
+            console.info("in mousemove >>> ");
+            $(element.currentTarget).addClass("obstacle");
+          })
+          .mouseup(function () {
+            $(".grid").off("mousemove");
+          });
+      }
+    });
+  }
+  $(".grid").off("click");
 }
 
 function clearMaze(element) {
   if (confirm("Are you sure you want to clear the maze?")) {
     $(".maze-setter").remove();
-    addButtons(["Start", "End", "Obstacles", "Clear"]);
+    addButtons(buttonsArray);
 
     $(".maze").remove();
     createMaze();
   }
 }
 
-$(() => {
-  console.info("Welcome to Maze Runner!");
-  //   welcomeMessage();
-  addButtons(["Start", "End", "Obstacles", "Clear"]);
-  createMaze();
-});
+
