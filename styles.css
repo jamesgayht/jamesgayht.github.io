@@ -15,7 +15,7 @@
     cursor: pointer;
 }
 
-.row {
+.col {
     width: auto;
     height: auto;
     display: block;
@@ -53,10 +53,14 @@
     background-color: green;
 }
 
-.end {
-    background-color: red;
-}
-
 .obstacle {
     background-color: darkslategray;
+}
+
+.path {
+    background-color: skyblue;
+}
+
+.end {
+    background-color: red;
 }
