@@ -141,19 +141,45 @@ function visualizePath() {
   if ($(".start").length === 0 || $(".end").length === 0) {
     alert("Please input a start and end point to visualize the path.");
   } else {
-    // checkAdjacentNodes()
-    findPath();
+    // const gridRow = new Array($('.col').length).fill(Infinity);
+    // const grid = new Array(gridRow.length).fill(gridRow)
+
+    let startNodeIDArr = ($('.start').attr('id')).split("-");
+    let startNodeCol = startNodeIDArr[0].match(/\d/g).join("");
+    let startNodeRow = startNodeIDArr[1].match(/\d/g).join("");
+    console.info("startNodeCol >>> ", startNodeCol);
+    console.info("startNodeRow >>> ", startNodeRow);
+    // grid[startNodeRow][startNodeCol] = 0
+    // console.info("startNode >>> ", grid[startNodeRow][startNodeCol])
+
+    let endNodeIDArr = ($('.end').attr('id')).split("-");
+    let endNodeCol = endNodeIDArr[0].match(/\d/g).join("");
+    let endNodeRow = endNodeIDArr[1].match(/\d/g).join("");
+    console.info("endNodeCol >>> ", endNodeCol);
+    console.info("endNodeRow >>> ", endNodeRow);
+    // grid[endNodeRow][endNodeCol]
+    // console.info("endNode >>> ", grid[endNodeRow][endNodeCol])
+
+    const grid = getInitialGrid(startNodeCol, startNodeRow, endNodeCol, endNodeRow)
+    console.info("grid >>> ", grid)
+
+    const visitedNodesInOrder = dijkstra(grid, grid[startNodeRow][startNodeCol], grid[endNodeRow][endNodeCol])
+    console.info("visitedNodesInOrder >>> ", visitedNodesInOrder)
+
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid[endNodeRow][endNodeCol]);
+    console.info("nodesInShortestPathOrder >>> ", nodesInShortestPathOrder)
+    // checkAdjacentNodes($(".start"));
+    // findPath();
+    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder)
   }
 }
 
-function checkAdjacentNodes() {
-  const $start = $(".start");
-  const $end = $(".end");
+function checkAdjacentNodes(element) {
+  const $element = $(element);
 
-  console.info("start >>> ", $start);
-  console.info("end >>> ", $end);
+  let currentNodeID = $($element).attr("id");
 
-  let currentNodeID = $(".start").attr("id");
+  console.info("currenot node id >>> ", currentNodeID);
 
   currentNodeIDArr = currentNodeID.split("-");
   console.info("currentNodeID[0] >>> ", currentNodeIDArr[0]);
@@ -202,6 +228,8 @@ function checkAdjacentNodes() {
     console.log("$bottomNode >>> ", $bottomNode);
     $bottomNode.addClass("checked");
   }
+  // recursive
+  // checkAdjacentNodes();
 }
 
 function findPath() {
@@ -268,5 +296,121 @@ function findPath() {
         $endNode.addClass("found");
       }
     }
+  }
+}
+
+// Performs Dijkstra's algorithm; returns *all* nodes in the order
+// in which they were visited. Also makes nodes point back to their
+// previous node, effectively allowing us to compute the shortest path
+// by backtracking from the finish node.
+function dijkstra(grid, startNode, endNode) {
+  const visitedNodesInOrder = [];
+  // startNode.distance = 0;
+
+  const unvisitedNodes = getAllNodes(grid);
+  console.info("unvisited nodes >>> ", unvisitedNodes)
+
+  while (!!unvisitedNodes.length) {
+    sortNodesByDistance(unvisitedNodes);
+    const closestNode = unvisitedNodes.shift();
+    console.info("closest node >>> ", closestNode)
+    // If we encounter a wall, we skip it.
+    // if (closestNode.isWall) continue;
+    // If the closest node is at a distance of infinity,
+    // we must be trapped and should therefore stop.
+    if (closestNode === Infinity) {
+      console.info("closest node === infinity")
+      return visitedNodesInOrder;
+    } 
+
+    closestNode.isVisited = true;
+    visitedNodesInOrder.push(closestNode);
+    if (closestNode === endNode) return visitedNodesInOrder;
+    updateUnvisitedNeighbors(closestNode, grid);
+  }
+}
+
+function sortNodesByDistance(unvisitedNodes) {
+  unvisitedNodes.sort((nodeA, nodeB) => (nodeA - nodeB));
+}
+
+function updateUnvisitedNeighbors(node, grid) {
+  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+  for (const neighbor of unvisitedNeighbors) {
+    neighbor.distance = node.distance + 1;
+    neighbor.previousNode = node;
+  }
+}
+
+function getUnvisitedNeighbors(node, grid) {
+  const neighbors = [];
+  const {col, row} = node;
+  if (row > 0) neighbors.push(grid[row - 1][col]);
+  if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
+  if (col > 0) neighbors.push(grid[row][col - 1]);
+  if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
+  return neighbors.filter(neighbor => !neighbor.isVisited);
+}
+
+function getAllNodes(grid) {
+  const nodes = [];
+  for (const row of grid) {
+    for (const node of row) {
+      nodes.push(node);
+    }
+  }
+  return nodes;
+}
+
+// Backtracks from the finishNode to find the shortest path.
+// Only works when called *after* the dijkstra method above.
+function getNodesInShortestPathOrder(finishNode) {
+  const nodesInShortestPathOrder = [];
+  let currentNode = finishNode;
+  while (currentNode !== null) {
+    nodesInShortestPathOrder.unshift(currentNode);
+    currentNode = currentNode.previousNode;
+  }
+  return nodesInShortestPathOrder;
+}
+
+const getInitialGrid = (startNodeCol, startNodeRow, endNodeCol, endNodeRow) => {
+  const grid = [];
+  for (let row = 0; row < 50; row++) {
+    const currentRow = [];
+    for (let col = 0; col < 50; col++) {
+      currentRow.push(createNode(col, row, startNodeCol, startNodeRow, endNodeCol, endNodeRow));
+    }
+    grid.push(currentRow);
+  }
+  return grid;
+};
+
+const createNode = (col, row, startNodeCol, startNodeRow, endNodeCol, endNodeRow) => {
+  return {
+    col, 
+    row, 
+    isStart: row === startNodeRow && col === startNodeCol,
+    isEnd: row === endNodeRow && col === endNodeCol,
+    distance: Infinity,
+    isVisited: false,
+    isWall: false,
+    previousNode: null,
+  }
+}
+
+function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+  for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+    if (i === visitedNodesInOrder.length) {
+      setTimeout(() => {
+        this.animateShortestPath(nodesInShortestPathOrder);
+      }, 10 * i);
+      return;
+    }
+    setTimeout(() => {
+      const node = visitedNodesInOrder[i];
+      document.getElementById(`node-${node.row}-${node.col}`).className =
+        'node node-visited';
+    }, 10 * i);
   }
 }
