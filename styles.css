@@ -49,7 +49,11 @@
     background-color: gray;
 }
 
-.checked {
+.node-visited {
+    background-color: skyblue;
+}
+
+.node-shortest-path {
     background-color: orange;
 }
 
