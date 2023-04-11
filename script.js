@@ -2,22 +2,17 @@ const buttonsArray = ["Start", "End", "Obstacles", "Visualize", "Clear"];
 
 $(() => {
   console.info("Welcome to Maze Runner!");
-  //   welcomeMessage();
   addButtons(buttonsArray);
+
+  // $('form').submit(function(e) {
+  //   e.preventDefault();
+  // })
+
+  let formInput = $('form').serialize(); 
+  // let formArr = formInput.split("=");
+  // console.info(formArr)
   createMaze();
 });
-
-// function welcomeMessage() {
-//   console.info("Setting up the interface");
-
-//   const $container = $(".container");
-//   const $welcomeMessage = $("<h3>").attr("id", "welcome-message");
-//   $welcomeMessage.text(
-//     "Welcome, Brave Runner. Today we will traverse the plains of bytes avoiding obstacles within our paths!"
-//   );
-//   $container.prepend($welcomeMessage);
-
-// }
 
 function createMaze(mazeSize = 50) {
   console.info("Creating the maze");

@@ -12,22 +12,22 @@
 
 <body>
     <div id="welcome-setup">
-        <h3>Welcome to the path-finder visualizer! Today we will traverse the plains of bytes avoiding obstacles within our paths!</h3>
+        <h3>Welcome to the path-finder visualizer!</h3>
         <form action="">
             <table>
                 <tr>
                     <td>
-                        Desired Grid Size:
-                    </td>
-                    <td>
-                        <input type="number" name="gridSize" id="grid-input" min="10" max="50" value="50" required>
+                        Desired Grid:
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <input type="number" name="gridSize" id="grid-input" min="10" max="50" placeholder="50" required >
                     </td>
+                </tr>
+                <tr>
                     <td>
-                        <button type="submit">Generate Maze</button>
+                        <button id="generate-maze" type="submit">Generate</button>
                     </td>
                 </tr>
             </table>
