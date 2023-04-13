@@ -194,7 +194,7 @@ function checkAdjacentNodes(element) {
 
   let currentNodeID = $($element).attr("id");
 
-  console.info("currenot node id >>> ", currentNodeID);
+  console.info("current node id >>> ", currentNodeID);
 
   currentNodeIDArr = currentNodeID.split("-");
   console.info("currentNodeID[0] >>> ", currentNodeIDArr[0]);

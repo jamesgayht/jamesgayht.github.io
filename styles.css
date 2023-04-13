@@ -15,8 +15,21 @@ body {
   vertical-align: middle;
 }
 
-form {
-    text-align: left;
+#welcome-setup {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.input-form {
+  display: flex;
+  align-items: center;
+  font-weight: bolder;
 }
 
 input {
@@ -67,11 +80,6 @@ form {
 
 button:hover {
   transform: scale(1.05) rotate(-1deg);
-}
-
-#welcome-setup {
-  display: block;
-  align-items: center;
 }
 
 .container {
