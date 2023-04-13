@@ -13,9 +13,8 @@ Examples of possible usage in real life: network routing protocols, gps navigati
 
 ### Dijkstra's Algorithm Pseudo Code
 1. Let distance of start node = 0
-2. Let distance of all other nodes = infinity 
-    a. set to infinity to state that we don't know the distance from start node to each node
-    b. as we explore the grid, we update each node with the distance 
+2. Let distance of all other nodes = infinity. Set to infinity to state that we don't know the distance from start node to each node. 
+3. As we explore the grid, we update each node with the distance 
 
 ## Features to update, as of 13 Apr 2023: 
 1. Update obstacles to be removed upon 2nd click (currently can be done by clicking clear maze)
