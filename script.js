@@ -8,7 +8,7 @@ $(() => {
   //   e.preventDefault();
   // })
 
-  let formInput = $('form').serialize(); 
+  let formInput = $("form").serialize();
   // let formArr = formInput.split("=");
   // console.info(formArr)
   createMaze();
@@ -133,28 +133,24 @@ function clearMaze(element) {
 }
 
 function visualizePath() {
+  // checks if start points and end points are added
   if ($(".start").length === 0 || $(".end").length === 0) {
     alert("Please input a start and end point to visualize the path.");
   } else {
-    // const gridRow = new Array($('.col').length).fill(Infinity);
-    // const grid = new Array(gridRow.length).fill(gridRow)
-
+    // get the row and col index of start and end nodes
     let startNodeIDArr = $(".start").attr("id").split("-");
     let startNodeCol = startNodeIDArr[0].match(/\d/g).join("");
     let startNodeRow = startNodeIDArr[1].match(/\d/g).join("");
     console.info("startNodeCol >>> ", startNodeCol);
     console.info("startNodeRow >>> ", startNodeRow);
-    // grid[startNodeRow][startNodeCol] = 0
-    // console.info("startNode >>> ", grid[startNodeRow][startNodeCol])
 
     let endNodeIDArr = $(".end").attr("id").split("-");
     let endNodeCol = endNodeIDArr[0].match(/\d/g).join("");
     let endNodeRow = endNodeIDArr[1].match(/\d/g).join("");
     console.info("endNodeCol >>> ", endNodeCol);
     console.info("endNodeRow >>> ", endNodeRow);
-    // grid[endNodeRow][endNodeCol]
-    // console.info("endNode >>> ", grid[endNodeRow][endNodeCol])
 
+    // creates an initial grid array with all nodes, and declares which is the start and end node
     const grid = getInitialGrid(
       startNodeCol,
       startNodeRow,
@@ -163,10 +159,11 @@ function visualizePath() {
     );
     console.info("grid >>> ", grid);
 
-    for(let i = 0; i < grid.length; i++) {
-      for(let j = 0; j < grid[i].length; j++) {
-        let node = grid[i][j]
-        if($(`#col${node.col}-row${node.row}`).hasClass("obstacle")) {
+    // checks for all nodes that are obstacles
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        let node = grid[i][j];
+        if ($(`#col${node.col}-row${node.row}`).hasClass("obstacle")) {
           node.isWall = true;
         }
       }
@@ -183,141 +180,12 @@ function visualizePath() {
       grid[endNodeRow][endNodeCol]
     );
     console.info("nodesInShortestPathOrder >>> ", nodesInShortestPathOrder);
-    // checkAdjacentNodes($(".start"));
-    // findPath();
+
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 }
 
-function checkAdjacentNodes(element) {
-  const $element = $(element);
-
-  let currentNodeID = $($element).attr("id");
-
-  console.info("current node id >>> ", currentNodeID);
-
-  currentNodeIDArr = currentNodeID.split("-");
-  console.info("currentNodeID[0] >>> ", currentNodeIDArr[0]);
-  console.info("currentNodeID[1] >>> ", currentNodeIDArr[1]);
-
-  // gets the current node's row and col number
-  let currentNodeCol = currentNodeIDArr[0].match(/\d/g).join("");
-  let currentNodeRow = currentNodeIDArr[1].match(/\d/g).join("");
-  console.info("currentNodeCol >>> ", currentNodeCol);
-  console.info("currentNodeRow >>> ", currentNodeRow);
-
-  // check top node
-  if (currentNodeRow !== 0) {
-    let topNodeCol = currentNodeCol;
-    let topNodeRow = currentNodeRow - 1;
-    const $topNode = $(`#col${topNodeCol}-row${topNodeRow}`);
-    console.log("$topNode >>> ", $topNode);
-    $topNode.addClass("checked");
-  }
-
-  // check left node
-  if (currentNodeCol !== 0) {
-    let leftNodeCol = currentNodeCol - 1;
-    let leftNodeRow = currentNodeRow;
-    const $leftNode = $(`#col${leftNodeCol}-row${leftNodeRow}`);
-    console.log("$leftNode >>> ", $leftNode);
-    $leftNode.addClass("checked");
-  }
-
-  // check right node
-  if (currentNodeCol !== $(".col").length - 1) {
-    let rightNodeCol = parseInt(currentNodeCol) + 1;
-    let rightNodeRow = currentNodeRow;
-
-    const $rightNode = $(`#col${rightNodeCol}-row${rightNodeRow}`);
-    console.log("$rightNode >>> ", $rightNode);
-    $rightNode.addClass("checked");
-  }
-
-  // check bottom node
-  if (currentNodeCol !== $(".col").length - 1) {
-    let bottomNodeCol = currentNodeCol;
-    let bottomNodeRow = parseInt(currentNodeRow) + 1;
-
-    const $bottomNode = $(`#col${bottomNodeCol}-row${bottomNodeRow}`);
-    console.log("$bottomNode >>> ", $bottomNode);
-    $bottomNode.addClass("checked");
-  }
-  // recursive
-  // checkAdjacentNodes();
-}
-
-function findPath() {
-  const startNodeID = $(".start").attr("id");
-  const $endNode = $(".end");
-  const endNodeID = $(".end").attr("id");
-
-  let startNodeIDArr = startNodeID.split("-");
-  let endNodeIDArr = endNodeID.split("-");
-
-  let startNodeCol = startNodeIDArr[0].match(/\d/g).join("");
-  let startNodeRow = startNodeIDArr[1].match(/\d/g).join("");
-  let endNodeCol = endNodeIDArr[0].match(/\d/g).join("");
-  let endNodeRow = endNodeIDArr[1].match(/\d/g).join("");
-
-  while ($(".found").length < 1) {
-    console.info("start col >>> ", startNodeCol);
-    console.info("start row >>> ", startNodeRow);
-    console.info("end col >>> ", endNodeCol);
-    console.info("end row >>> ", endNodeRow);
-
-    if (parseInt(startNodeCol) < parseInt(endNodeCol)) {
-      console.info("IN RIGHT");
-      const $rightNode = $(
-        `#col${parseInt(startNodeCol) + 1}-row${startNodeRow}`
-      );
-      $rightNode.addClass("path");
-      startNodeCol++;
-      if ($rightNode.attr("id") === endNodeID) {
-        console.info("FOUND RIGHT");
-        $endNode.addClass("found");
-      }
-    } else if (parseInt(startNodeCol) > parseInt(endNodeCol)) {
-      console.info("IN LEFT");
-      const $leftNode = $(
-        `#col${parseInt(startNodeCol) - 1}-row${startNodeRow}`
-      );
-      $leftNode.addClass("path");
-      startNodeCol--;
-      if ($leftNode.attr("id") === endNodeID) {
-        console.info("FOUND LEFT");
-        $endNode.addClass("found");
-      }
-    } else if (parseInt(startNodeRow) > parseInt(endNodeRow)) {
-      console.info("IN TOP");
-      const $topNode = $(
-        `#col${startNodeCol}-row${parseInt(startNodeRow) - 1}`
-      );
-      $topNode.addClass("path");
-      startNodeRow--;
-      if ($topNode.attr("id") === endNodeID) {
-        console.info("FOUND TOP");
-        $endNode.addClass("found");
-      }
-    } else if (parseInt(startNodeRow) < parseInt(endNodeRow)) {
-      console.info("IN BOTTOM");
-      const $bottomNode = $(
-        `#col${startNodeCol}-row${parseInt(startNodeRow) + 1}`
-      );
-      $bottomNode.addClass("path");
-      startNodeRow++;
-      if ($bottomNode.attr("id") === endNodeID) {
-        console.info("FOUND BOTTOM");
-        $endNode.addClass("found");
-      }
-    }
-  }
-}
-
-// Performs Dijkstra's algorithm; returns *all* nodes in the order
-// in which they were visited. Also makes nodes point back to their
-// previous node, effectively allowing us to compute the shortest path
-// by backtracking from the finish node.
+// Performs Dijkstra's algorithm; returns nodes in the order they were visited & point back to their previous node, allowing us to compute the shortest path by backtracking from the finish node.
 function dijkstra(grid, startNode, endNode) {
   const visitedNodesInOrder = [];
   startNode.distance = 0;
@@ -326,22 +194,22 @@ function dijkstra(grid, startNode, endNode) {
   console.info("unvisited nodes >>> ", unvisitedNodes);
 
   while (!!unvisitedNodes.length) {
+    // since we have initialized startNode.distance to 0, this will allow us to start from the startNode and visit its neighbours
     sortNodesByDistance(unvisitedNodes);
+
+    // we use .shift() to remove the closestNode from the unvisitedNodes array
     const closestNode = unvisitedNodes.shift();
-    // console.info("closest node >>> ", closestNode);
-    // If we encounter a wall, we skip it.
+
+    // If we encounter a wall, we skip it -> continue key word skips this iteration of loop
     if (closestNode.isWall) continue;
-    // If the closest node is at a distance of infinity,
-    // we must be trapped and should therefore stop.
-    if (closestNode.distance === Infinity) {
-      console.info("closest node === infinity");
-      return visitedNodesInOrder;
-    }
+
+    // If the closest node is at a distance of infinity, we must be trapped and should therefore stop
+    if (closestNode.distance === Infinity) return visitedNodesInOrder;
 
     closestNode.isVisited = true;
     visitedNodesInOrder.push(closestNode);
     if (closestNode === endNode) return visitedNodesInOrder;
-    updateUnvisitedNeighbors(closestNode, grid);
+    updateUnvisitedNeighbours(closestNode, grid);
   }
 }
 
@@ -349,22 +217,23 @@ function sortNodesByDistance(unvisitedNodes) {
   unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
 
-function updateUnvisitedNeighbors(node, grid) {
-  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
-  for (const neighbor of unvisitedNeighbors) {
-    neighbor.distance = node.distance + 1;
-    neighbor.previousNode = node;
+function updateUnvisitedNeighbours(node, grid) {
+  const unvisitedNeighbours = getUnvisitedNeighbours(node, grid);
+  for (const neighbour of unvisitedNeighbours) {
+    neighbour.distance = node.distance + 1;
+    neighbour.previousNode = node;
   }
 }
 
-function getUnvisitedNeighbors(node, grid) {
-  const neighbors = [];
+function getUnvisitedNeighbours(node, grid) {
+  const neighbours = [];
   const { col, row } = node;
-  if (row > 0) neighbors.push(grid[row - 1][col]);
-  if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
-  if (col > 0) neighbors.push(grid[row][col - 1]);
-  if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
-  return neighbors.filter((neighbor) => !neighbor.isVisited);
+  if (row > 0) neighbours.push(grid[row - 1][col]);
+  if (row < grid.length - 1) neighbours.push(grid[row + 1][col]);
+  if (col > 0) neighbours.push(grid[row][col - 1]);
+  if (col < grid[0].length - 1) neighbours.push(grid[row][col + 1]);
+  // .filter() returns elements that are true, so we use the ! prefix to convert neightbours which are unvisited and remove those which have already been visited
+  return neighbours.filter((neighbour) => !neighbour.isVisited);
 }
 
 function getAllNodes(grid) {
@@ -377,12 +246,12 @@ function getAllNodes(grid) {
   return nodes;
 }
 
-// Backtracks from the finishNode to find the shortest path.
-// Only works when called *after* the dijkstra method above.
-function getNodesInShortestPathOrder(finishNode) {
+// Backtracks from the endNode to find the shortest path
+function getNodesInShortestPathOrder(endNode) {
   const nodesInShortestPathOrder = [];
-  let currentNode = finishNode;
+  let currentNode = endNode;
   while (currentNode !== null) {
+    // .unshift() adds the currentNode to the beginning of nodesInShortestPathOrder array
     nodesInShortestPathOrder.unshift(currentNode);
     currentNode = currentNode.previousNode;
   }
@@ -428,8 +297,6 @@ function animateShortestPath(nodesInShortestPathOrder) {
     setTimeout(() => {
       const node = nodesInShortestPathOrder[i];
       $(`#col${node.col}-row${node.row}`).addClass("node node-shortest-path");
-      // document.getElementById(`node-${node.row}-${node.col}`).className =
-      //   'node node-shortest-path';
     }, 50 * i);
   }
 }
@@ -437,6 +304,7 @@ function animateShortestPath(nodesInShortestPathOrder) {
 function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
   for (let i = 0; i <= visitedNodesInOrder.length; i++) {
     if (i === visitedNodesInOrder.length) {
+      // if i === visitedNodesInOrder.length, we have found our end node 
       setTimeout(() => {
         animateShortestPath(nodesInShortestPathOrder);
       }, 10 * i);
@@ -445,8 +313,6 @@ function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     setTimeout(() => {
       const node = visitedNodesInOrder[i];
       $(`#col${node.col}-row${node.row}`).addClass("node node-visited");
-      // document.getElementById(`node-${node.row}-${node.col}`).className =
-      //   'node node-visited';
     }, 10 * i);
   }
 }
