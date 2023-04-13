@@ -116,13 +116,13 @@ button:hover {
 }
 
 .grid {
-  background-color: aliceblue;
+  background-color: #ece5c7;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   width: 10px;
   height: 10px;
-  border: black 1px solid;
+  border: #B7B7B7 1px outset;
 }
 
 .enabled {
@@ -143,22 +143,23 @@ button:hover {
 @keyframes visitedAnimation {
   0% {
     transform: scale(0.3);
-    background-color: #7d6e83;
+    background-color: #00FFC6;
     border-radius: 100%;
   }
 
   50% {
-    background-color: #7895b2;
+    background-color: #30AADD;
   }
 
   75% {
     transform: scale(1.2);
-    background-color: #a7d2cb;
+    background-color: #43919B;
   }
 
   100% {
     transform: scale(1);
-    background-color: #7895b2;
+    background-color: #247881;
+
   }
 }
 
@@ -180,17 +181,17 @@ button:hover {
 @keyframes shortestPath {
   0% {
     transform: scale(0.6);
-    background-color: #f1f7b5;
+    background-color: #FFFF00;
   }
 
   50% {
     transform: scale(1.2);
-    background-color: #f1f7b5;
+    background-color: #FFFF00;
   }
 
   100% {
     transform: scale(1);
-    background-color: #f1f7b5;
+    background-color: #FFFF00;
   }
 }
 
@@ -199,17 +200,13 @@ button:hover {
 }
 
 .start {
-  background-color: #86c8bc !important;
+  background-color: #38E54D !important;
 }
 
 .obstacle {
-  background-color: darkslategray;
-}
-
-.path {
-  background-color: skyblue;
+  background-color: #293462;
 }
 
 .end {
-  background-color: #e97777 !important;
+  background-color: #EA5455 !important;
 }
