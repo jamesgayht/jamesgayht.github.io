@@ -1,9 +1,10 @@
 # Path finder visualizer using Dijkstra's algorithm
 
 ## How to use
-1. Place a starting and ending point anywhere on the grid
-2. Place obstacles along the way to block off paths
-3. Click "Visualize" to see Dijkstra's Algorithm in motion
+1. Generate a grid based on your desired size
+2. Place a starting and ending point anywhere on the grid
+3. Place obstacles along the way to block off paths
+4. Click "Visualize" to see Dijkstra's Algorithm in motion
 
 ### Dijkstra's Algorithm
 A weighted algorithm used to find the shortest path between two points by starting at a specified node and finding the shortest path to all other nodes in the grid one at a time. 
@@ -19,8 +20,7 @@ Examples of possible usage in real life: network routing protocols, gps navigati
 ## Features to update, as of 13 Apr 2023: 
 1. Update obstacles to be removed upon 2nd click (currently can be done by clicking clear maze)
 2. If start/end point, do not allow obstacles to overwrite
-3. Implement dynamic grid sizing from user's input 
-4. On clear, stop running dijkstra's algorithm 
-5. Add functionality to add weights for each grid
-6. Add A* Pathfinding Algorithm 
+3. On clear, stop running dijkstra's algorithm 
+4. Add functionality to add weights for each grid
+5. Add A* Pathfinding Algorithm 
 

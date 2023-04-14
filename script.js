@@ -2,20 +2,32 @@ const buttonsArray = ["Start", "End", "Obstacles", "Visualize", "Clear"];
 
 $(() => {
   console.info("Welcome to Maze Runner!");
+
+  $("#instructions").on("click", () => {
+    console.info("clicking instructions");
+    alert(
+      '1. Generate a grid based on your desired size\n2. Place a starting and ending point anywhere on the grid\n3. Place obstacles along the way to block off paths\n4. Click "Visualize" to see Dijkstra\'s Algorithm in motion'
+    );
+  });
   addButtons(buttonsArray);
-
-  // $('form').submit(function(e) {
-  //   e.preventDefault();
-  // })
-
-  let formInput = $("form").serialize();
-  // let formArr = formInput.split("=");
-  // console.info(formArr)
   createMaze();
+
+  $("form").submit(function (e) {
+    e.preventDefault();
+
+    let formInput = $("form").serialize();
+    let formArr = formInput.split("=");
+    console.info(formArr);
+
+    $(".maze").remove();
+    $(".maze-setter").remove();
+    addButtons(buttonsArray);
+    createMaze(formArr[1]);
+  });
 });
 
 function createMaze(mazeSize = 50) {
-  console.info("Creating the maze");
+  console.info(`Creating the maze of ${mazeSize}x${mazeSize}`);
 
   const $maze = $("<div>").addClass("maze");
   $(".container").append($maze);
@@ -124,11 +136,11 @@ function addObstacles(element) {
 
 function clearMaze(element) {
   if (confirm("Are you sure you want to clear the maze?")) {
+    let mazeSize = $(".col").length;
     $(".maze-setter").remove();
-    addButtons(buttonsArray);
-
     $(".maze").remove();
-    createMaze();
+    addButtons(buttonsArray);
+    createMaze(mazeSize);
   }
 }
 
@@ -137,6 +149,11 @@ function visualizePath() {
   if ($(".start").length === 0 || $(".end").length === 0) {
     alert("Please input a start and end point to visualize the path.");
   } else {
+    $("#Start-button").removeClass("enabled");
+    $("#End-button").removeClass("enabled");
+    $("#Obstacles-button").removeClass("enabled");
+    let mazeSize = $(".col").length;
+    console.info("mazeSize in visualize path >>> ", mazeSize);
     // get the row and col index of start and end nodes
     let startNodeIDArr = $(".start").attr("id").split("-");
     let startNodeCol = startNodeIDArr[0].match(/\d/g).join("");
@@ -152,6 +169,7 @@ function visualizePath() {
 
     // creates an initial grid array with all nodes, and declares which is the start and end node
     const grid = getInitialGrid(
+      mazeSize,
       startNodeCol,
       startNodeRow,
       endNodeCol,
@@ -258,11 +276,17 @@ function getNodesInShortestPathOrder(endNode) {
   return nodesInShortestPathOrder;
 }
 
-const getInitialGrid = (startNodeCol, startNodeRow, endNodeCol, endNodeRow) => {
+const getInitialGrid = (
+  mazeSize,
+  startNodeCol,
+  startNodeRow,
+  endNodeCol,
+  endNodeRow
+) => {
   const grid = [];
-  for (let row = 0; row < 50; row++) {
+  for (let row = 0; row < mazeSize; row++) {
     const currentRow = [];
-    for (let col = 0; col < 50; col++) {
+    for (let col = 0; col < mazeSize; col++) {
       currentRow.push(
         createNode(col, row, startNodeCol, startNodeRow, endNodeCol, endNodeRow)
       );
@@ -304,7 +328,7 @@ function animateShortestPath(nodesInShortestPathOrder) {
 function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
   for (let i = 0; i <= visitedNodesInOrder.length; i++) {
     if (i === visitedNodesInOrder.length) {
-      // if i === visitedNodesInOrder.length, we have found our end node 
+      // if i === visitedNodesInOrder.length, we have found our end node
       setTimeout(() => {
         animateShortestPath(nodesInShortestPathOrder);
       }, 10 * i);
