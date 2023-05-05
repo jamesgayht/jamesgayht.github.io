@@ -12,15 +12,4 @@ At each step, it selects the node with the shortest distance from the starting n
 The algorithm continues until it has found the shortest path to the end node in the grid, or if it has been completely blocked off, then the shortest path to all nodes that are not blocked by obstacles.
 Examples of possible usage in real life: network routing protocols, gps navigation system
 
-### Dijkstra's Algorithm Pseudo Code
-1. Let distance of start node = 0
-2. Let distance of all other nodes = infinity. Set to infinity to state that we don't know the distance from start node to each node. 
-3. As we explore the grid, we update each node with the distance 
-
-## Features to update, as of 13 Apr 2023: 
-1. Update obstacles to be removed upon 2nd click (currently can be done by clicking clear maze)
-2. If start/end point, do not allow obstacles to overwrite
-3. On clear, stop running dijkstra's algorithm 
-4. Add functionality to add weights for each grid
-5. Add A* Pathfinding Algorithm 
 
